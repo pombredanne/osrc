@@ -1,9 +1,12 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 __all__ = ["create_app"]
 
 import flask
+
+
+def before_first_request():
+    pass
 
 
 def create_app(config_filename=None):
@@ -12,8 +15,15 @@ def create_app(config_filename=None):
     if config_filename is not None:
         app.config.from_pyfile(config_filename)
 
-    from .frontend import frontend, firstname, compare
-    app.register_blueprint(frontend)
-    app.jinja_env.filters["firstname"] = firstname
-    app.jinja_env.filters["compare"] = compare
+    # Set up the database.
+    from .models import db
+    db.init_app(app)
+
+    # Before request.
+    app.before_first_request(before_first_request)
+
+    # Bind the blueprints.
+    from .api import api
+    app.register_blueprint(api)
+
     return app

@@ -13,3 +13,6 @@ ads*.html
 analytics.html
 *.sh
 *.log
+local.py
+volumes
+*.json.gz
